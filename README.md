@@ -200,6 +200,7 @@ menggunakan iptables pada masing masing server, selebihnya akan di DROP.
 
 ### DI MALANG, MOJOKERTO
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 -j DROP
+
 iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
 
 4.
@@ -210,8 +211,8 @@ Akses dari subnet SIDOARJO hanya diperbolehkan pada pukul 07.00 - 17.00 pada har
 - Jawab
 
 ### DI MALANG
-ip sidoarjo
 iptables -A INPUT -s 192.168.2.0/24 -m time --timestart 07:00 --timestop 17:00 --weekdays Mon,Tue,Wed,Thu,Fri -j ACCEPT
+
 iptables -A INPUT -s 192.168.2.0/24 -j REJECT
 
 5.
@@ -233,6 +234,7 @@ akan didistribusikan secara bergantian pada PROBOLINGGO port 80 dan MADIUN port 
 
 ### DI SURABAYA
 iptables -t nat -A PREROUTING -p tcp -d 10.151.79.90 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 192.168.0.11:80
+
 iptables -t nat -A PREROUTING -p tcp -d 10.151.79.90 --dport 80 -j DNAT --to-destination 192.168.0.10:80
 
 7.
@@ -244,8 +246,12 @@ Bibah ingin agar semua paket didrop oleh firewall (dalam topologi) tercatat dala
 
 ### DI SURABAYA
 iptables -N LOGGING
+
 iptables -A INPUT -j LOGGING
+
 iptables -A OUTPUT -j LOGGING
+
 iptables -A LOGGING -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+
 iptables -A LOGGING -j DROP
 
